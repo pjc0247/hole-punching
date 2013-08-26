@@ -1,0 +1,3 @@
+RELAY = 0
+SERVER = 1
+CLIENT = 2

@@ -1,7 +1,23 @@
 require 'eventmachine'
 load 'protocol.rb'
+load 'methods.rb'
 
 PORT = 9916
+
+class Server < EM::Connection
+	include EM::P::ObjectProtocol
+
+	def post_init
+		puts "con"
+	end
+	def unbind
+		puts "discon"
+	end
+
+	def receive_object(obj)
+		
+	end
+end
 
 class Client < EM::Connection
 	include EM::P::ObjectProtocol
@@ -23,6 +39,17 @@ class Client < EM::Connection
 			when SET_PEER
 				@peer = obj["id"]
 				puts "peer -> #{@peer}"
+			when SET_METHOD
+				@method = obj["method"]
+				puts "method -> #{@method}"
+			when OPEN_SERVER
+				EventMachine.start_server("0.0.0.0", PORT+21, Server)
+
+				packet = Hash.new
+				packet["type"] = SERVER_READY
+				send_object packet
+			when CLOSE_SERVER
+				
 		end
 	end
 end
