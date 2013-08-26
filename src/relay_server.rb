@@ -64,7 +64,7 @@ class RelayServer < EM::Connection
 		elsif obj["type"] == SERVER_READY
 			conn = false
 			begin
-				c = TCPSocket.new "127.0.0.1", PORT+1
+				c = TCPSocket.new @ip, PORT+1
 				c.close
 
 				conn = true
