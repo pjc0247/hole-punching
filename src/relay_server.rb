@@ -60,10 +60,17 @@ class RelayServer < EM::Connection
 	def receive_object(obj)
 		if obj["type"] == DUMMY
 		elsif obj["type"] == SERVER_READY
+			conn = false
 			begin
 				c = TCPSocket.new "127.0.0.1", PORT+1
 				c.close
 
+				conn = true
+			rescue
+				# conn = false
+			end
+
+			if conn == true
 				@avaliable = true
 
 				packet = Hash.new
@@ -73,7 +80,7 @@ class RelayServer < EM::Connection
 
 				packet["method"] = CLIENT
 				@peer.send_object packet
-			rescue
+			else
 				@avaliable = false
 
 				packet = Hash.new
