@@ -42,8 +42,14 @@ class Client < EM::Connection
 			when SET_METHOD
 				@method = obj["method"]
 				puts "method -> #{@method}"
+
+				case @method
+					when CLIENT
+						# connect to obj["dst"]
+						puts "connect to #{obj["dst"]}"
+				end
 			when OPEN_SERVER
-				EventMachine.start_server("0.0.0.0", PORT+21, Server)
+				EventMachine.start_server("0.0.0.0", PORT+1, Server)
 
 				packet = Hash.new
 				packet["type"] = SERVER_READY

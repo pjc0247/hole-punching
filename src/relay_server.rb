@@ -22,9 +22,11 @@ class RelayServer < EM::Connection
 		@alive = true
 		@avaliavble = nil
 
+		@ip = Socket.unpack_sockaddr_in(get_peername)[1]
+
 		set_sock_opt(Socket::IPPROTO_TCP, Socket::TCP_NODELAY, 1)
 
-		puts "new connection.. #{@id}"
+		puts "new connection.. #{@id}, #{@ip}"
 
 		packet = Hash.new
 		packet["type"] = SET_ID
@@ -79,6 +81,7 @@ class RelayServer < EM::Connection
 				send_object packet
 
 				packet["method"] = CLIENT
+				packet["dst"] = @ip
 				@peer.send_object packet
 			else
 				@avaliable = false
